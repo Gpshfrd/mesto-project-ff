@@ -17,6 +17,8 @@ function createCard(cardDesc, cardImgLink, removeFunc) {
   deleteButton.addEventListener('click', () => removeFunc(card));
 
   cardsList.prepend(card);
+
+  return card;
 }
 
 // @todo: Функция удаления карточки
