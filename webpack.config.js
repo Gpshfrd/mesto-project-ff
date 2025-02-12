@@ -34,6 +34,14 @@ module.exports = {
         options: { importLoaders: 1 }
       },
       'postcss-loader']
+    },
+    {
+      test: /\.html$/, 
+      use: ['html-loader']
+    },
+    {
+      test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
+      type: 'asset/resource'
     }]
   },
   plugins: [
