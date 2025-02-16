@@ -1,11 +1,4 @@
-import {
-  cardTemplate,
-  cardsList,
-  popupImage,
-  popupImagePicture,
-  popupImageContent,
-} from "../scripts/index.js";
-import { openModal } from "./modal.js";
+import { cardTemplate } from "../scripts/index.js";
 
 // Функция создания карточки
 export function createCard(
@@ -31,22 +24,11 @@ export function createCard(
 
   likeButton.addEventListener("click", () => likeFunc(likeButton));
 
-  cardsList.prepend(card);
-
   return card;
-}
-
-export function openImage(cardImg) {
-  popupImagePicture.src = "";
-  openModal(popupImage);
-  popupImagePicture.src = cardImg.src;
-  popupImagePicture.alt = cardImg.alt;
-  popupImageContent.append(cardImg.alt);
 }
 
 // Функция удаления карточки
 export function removeCard(card) {
-  console.log(card);
   card.remove();
 }
 

@@ -1,12 +1,7 @@
 import "../pages/index.css";
 import { initialCards } from "./cards.js";
 import { closeModal, openModal } from "../components/modal.js";
-import {
-  createCard,
-  likeCard,
-  removeCard,
-  openImage,
-} from "../components/card.js";
+import { createCard, likeCard, removeCard } from "../components/card.js";
 
 // Tемплейт карточки
 export const cardTemplate = document.querySelector("#card-template").content;
@@ -33,23 +28,12 @@ export const popupImageCloseButton = popupImage.querySelector(".popup__close");
 export const popupImagePicture = popupImage.querySelector(".popup__image");
 export const popupImageContent = popupImage.querySelector(".popup__caption");
 
-// Вывести первые шесть карточек на страницу
-initialCards.forEach((card) => {
-  createCard(card.name, card.link, removeCard, likeCard, openImage);
-});
-
-popupImageCloseButton.addEventListener("click", () => {
-  closeModal(popupImage);
-  popupImageContent.textContent = "";
-});
-
 function handleFormSubmit(evt) {
   evt.preventDefault();
-  nameInput.value = profileName.innerHTML;
-  jobInput.value = profileProfession.innerHTML;
+  profileName.textContent = nameInput.value;
+  profileProfession.textContent = jobInput.value;
+  closeModal(popupEdit);
 }
-
-popupEdit.addEventListener("submit", handleFormSubmit);
 
 function handleNewCardSubmit(evt) {
   evt.preventDefault();
@@ -58,17 +42,39 @@ function handleNewCardSubmit(evt) {
   );
   let cardURLInput = popupAddCard.querySelector(".popup__input_type_url");
   let newCard = { name: cardNameInput.value, link: cardURLInput.value };
-  createCard(newCard.name, newCard.link, removeCard, likeCard, openImage);
+  let card = createCard(
+    newCard.name,
+    newCard.link,
+    removeCard,
+    likeCard,
+    openImage
+  );
+  cardsList.prepend(card);
   closeModal(popupAddCard);
   cardNameInput.value = "";
   cardURLInput.value = "";
 }
 
+function openImage(cardImg) {
+  popupImagePicture.src = "";
+  openModal(popupImage);
+  popupImagePicture.src = cardImg.src;
+  popupImagePicture.alt = cardImg.alt;
+  popupImageContent.append(cardImg.alt);
+}
+
+popupImageCloseButton.addEventListener("click", () => {
+  closeModal(popupImage);
+  popupImageContent.textContent = "";
+});
+
+popupEdit.addEventListener("submit", handleFormSubmit);
+
 popupAddCard.addEventListener("submit", handleNewCardSubmit);
 
 editButton.addEventListener("click", () => {
-  nameInput.value = profileName.innerHTML;
-  jobInput.value = profileProfession.innerHTML;
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileProfession.textContent;
   openModal(popupEdit);
 });
 
@@ -82,4 +88,16 @@ addCardButton.addEventListener("click", () => {
 
 popupAddCardCloseButton.addEventListener("click", () => {
   closeModal(popupAddCard);
+});
+
+// Вывод первых шести карточек на страницу
+initialCards.forEach((card) => {
+  let newCard = createCard(
+    card.name,
+    card.link,
+    removeCard,
+    likeCard,
+    openImage
+  );
+  cardsList.prepend(newCard);
 });
