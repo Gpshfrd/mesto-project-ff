@@ -1,8 +1,8 @@
 import "../pages/index.css";
-import { initialCards } from "./cards.js";
 import { closeModal, openModal } from "../components/modal.js";
 import { createCard, likeCard, removeCard } from "../components/card.js";
 import { enableValidation, clearValidation } from "./validation.js";
+import { getInitialCards, getUserInfo, updateUserInfo, postNewCard } from "./api.js";
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -46,27 +46,40 @@ function handleEditFormSubmit(evt) {
   evt.preventDefault();
   profileName.textContent = nameInput.value;
   profileProfession.textContent = jobInput.value;
+  updateUserInfo(nameInput.value, jobInput.value)
+  .then((res) => {
+    profileName.textContent = res.name;
+    profileProfession.textContent = res.about;  
+  })
+  .catch((error) => {
+    console.error(`Ошибка редактирования профиля: ${error.message}`);
+  })
   closeModal(popupEdit);
 }
 
 function handleNewCardSubmit(evt) {
   evt.preventDefault();
-  const cardNameInput = popupAddCard.querySelector(
-    ".popup__input_type_card-name"
-  );
+  const cardNameInput = popupAddCard.querySelector(".popup__input_type_card-name");
   const cardURLInput = popupAddCard.querySelector(".popup__input_type_url");
-  const newCard = { name: cardNameInput.value, link: cardURLInput.value };
-  const card = createCard(
-    newCard.name,
-    newCard.link,
-    removeCard,
-    likeCard,
-    openImage
-  );
-  cardsList.prepend(card);
+
+  Promise.all([getUserInfo(), 
+    postNewCard(cardNameInput.value, cardURLInput.value)])
+    .then(([user, card]) => {
+      const userID = user['_id'];
+      addCard(card, userID)
+    })
+    .catch(error => {
+      console.error(`Ошибка добавления карточки: ${error.message}`);
+    })
+  
   closeModal(popupAddCard);
   cardNameInput.value = "";
   cardURLInput.value = "";
+}
+
+function addCard(card, userID) {
+  const newCard = createCard(card, userID, removeCard, likeCard, openImage, cardTemplate);
+  cardsList.prepend(newCard);
 }
 
 function openImage(cardImg) {
@@ -117,15 +130,23 @@ popupList.forEach((popup) => {
   });
 });
 
+Promise.all([getUserInfo(), getInitialCards()])
+.then(([user, cards]) => {
+  const userID = user['_id'];
+  addCards(cards, userID);
+})
+.catch(error => { console.error(error) })
 
-// Вывод первых шести карточек на страницу
-initialCards.forEach((card) => {
-  const newCard = createCard(
-    card.name,
-    card.link,
-    removeCard,
-    likeCard,
-    openImage
-  );
-  cardsList.prepend(newCard);
-});
+function addCards(cards, userID) {
+  cards.forEach((cardInfo) => {
+    const newCard = createCard(
+      cardInfo,
+      userID,
+      removeCard,
+      likeCard,
+      openImage,
+      cardTemplate
+    );
+    cardsList.prepend(newCard);
+  });
+}

@@ -1,6 +1,5 @@
 export function enableValidation(validationConfig) {
   const forms = document.querySelectorAll(validationConfig.formSelector);
-  console.log(forms);
 
   forms.forEach(form => {
     setEventListeners(form, validationConfig)
@@ -47,7 +46,6 @@ function toggleButtonState(inputs, button, validationConfig) {
 }
 
 function showInputError(form, input, validationConfig) {
-  console.log(input.dataset);
   const error = form.querySelector(`.${input.id}-error`);
   error.textContent = input.validationMessage;
   if (input.validationMessage == "undefined") {
