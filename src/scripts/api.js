@@ -13,14 +13,14 @@ function handleResponse(res) {
   return Promise.reject(`Ошибка: ${res.status}`);
 }
 
-export function getUserInfo() {
+export const getUserInfo = () => {
   return fetch(`${apiConfig.url}/users/me`,  {
     headers: apiConfig.headers
   })
   .then(handleResponse);
 };
 
-export function updateUserInfo(name, about) {
+export const updateUserInfo = (name, about) => {
   return fetch(`${apiConfig.url}/users/me`, {
     method: 'PATCH',
     headers: apiConfig.headers,
@@ -32,7 +32,7 @@ export function updateUserInfo(name, about) {
   .then(handleResponse);
 }
 
-export function getInitialCards() {
+export const getInitialCards = () => {
   return fetch(`${apiConfig.url}/cards`, {
     headers: apiConfig.headers
   })
@@ -45,7 +45,7 @@ export function getInitialCards() {
   )
 }
 
-export function postNewCard(name, link) {
+export const postNewCard = (name, link) => {
   return fetch(`${apiConfig.url}/cards`, {
     method: 'POST',
     body: JSON.stringify({
@@ -57,7 +57,7 @@ export function postNewCard(name, link) {
   .then(handleResponse);
 }
 
-export function removeFromCardsList(cardID) {
+export const removeFromCardsList = (cardID) => {
   return fetch(`${apiConfig.url}/cards/${cardID}`, {
     method: 'DELETE',
     headers: apiConfig.headers
@@ -65,7 +65,7 @@ export function removeFromCardsList(cardID) {
   .then(handleResponse);
 }
 
-export function addLike(cardID) {
+export const addLike = (cardID) => {
   return fetch(`${apiConfig.url}/cards/likes/${cardID}`, {
     method: 'PUT',
     headers: apiConfig.headers
@@ -73,9 +73,20 @@ export function addLike(cardID) {
   .then(handleResponse);
 }
 
-export function removeLike(cardID) {
+export const removeLike = (cardID) => {
   return fetch(`${apiConfig.url}/cards/likes/${cardID}`, {
     method: 'DELETE',
+    headers: apiConfig.headers
+  })
+  .then(handleResponse);
+}
+
+export const changeAvatar = (avatarLink) => {
+  return fetch(`${apiConfig.url}/users/me/avatar`, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      avatar: avatarLink
+    }),
     headers: apiConfig.headers
   })
   .then(handleResponse);

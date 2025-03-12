@@ -2,7 +2,7 @@ import "../pages/index.css";
 import { closeModal, openModal } from "../components/modal.js";
 import { createCard, likeCard, removeCard } from "../components/card.js";
 import { enableValidation, clearValidation } from "./validation.js";
-import { getInitialCards, getUserInfo, updateUserInfo, postNewCard } from "./api.js";
+import { getInitialCards, getUserInfo, updateUserInfo, postNewCard, changeAvatar } from "./api.js";
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -41,6 +41,26 @@ const popupImage = document.querySelector(".popup_type_image");
 const popupImageCloseButton = popupImage.querySelector(".popup__close");
 const popupImagePicture = popupImage.querySelector(".popup__image");
 const popupImageContent = popupImage.querySelector(".popup__caption");
+
+const profileAvatar = document.querySelector(".profile__image");
+const popupChangeAvatar = document.querySelector(".popup_type-change-avatar");
+const changeAvatarForm = popupChangeAvatar.querySelector(".popup__form");
+const avatarInput = popupChangeAvatar.querySelector(".popup__input_type_change-avatar");
+const popupChangeAvatarCloseButton = popupChangeAvatar.querySelector(".popup__close");
+
+function handleAvatarFormSubmit(evt) {
+  evt.preventDefault();
+
+  changeAvatar(avatarInput.value)
+  .then((res) => {
+    profileAvatar.style.backgroundImage = `url(${res.avatar})`;
+  })
+  .catch((error) => {
+    console.error(`Ошибка изменения аватара: ${error.message}`);
+  })
+  closeModal(popupChangeAvatar);
+  avatarInput.textContent = "";
+}
 
 function handleEditFormSubmit(evt) {
   evt.preventDefault();
@@ -90,14 +110,39 @@ function openImage(cardImg) {
   popupImageContent.textContent = cardImg.alt;
 }
 
+profileAvatar.addEventListener("click", () => {
+  changeAvatarForm.reset();
+  clearValidation(changeAvatarForm, validationConfig);
+  openModal(popupChangeAvatar);
+})
+
+changeAvatarForm.addEventListener("submit", (evt) => {
+  changeAvatarForm.querySelector(".popup__button").textContent = "Сохранение...";
+  handleAvatarFormSubmit(evt);
+  changeAvatarForm.querySelector(".popup__button").textContent = "Сохранить";
+});
+
+popupChangeAvatarCloseButton.addEventListener("click", () => {
+  closeModal(popupChangeAvatar);
+  avatarInput.textContent = "";
+})
+
 popupImageCloseButton.addEventListener("click", () => {
   closeModal(popupImage);
   popupImageContent.textContent = "";
 });
 
-popupEdit.addEventListener("submit", handleEditFormSubmit);
+popupEdit.addEventListener("submit", (evt) => {
+  popupEdit.querySelector(".popup__button").textContent = "Сохранение...";
+  handleEditFormSubmit(evt);
+  popupEdit.querySelector(".popup__button").textContent = "Сохранить";
+});
 
-popupAddCard.addEventListener("submit", handleNewCardSubmit);
+popupAddCard.addEventListener("submit", (evt) => {
+  popupAddCard.querySelector(".popup__button").textContent = "Сохранение...";
+  handleNewCardSubmit(evt);
+  popupAddCard.querySelector(".popup__button").textContent = "Сохранить";
+});
 
 editButton.addEventListener("click", () => {
   nameInput.value = profileName.textContent;
@@ -150,3 +195,4 @@ function addCards(cards, userID) {
     cardsList.prepend(newCard);
   });
 }
+
