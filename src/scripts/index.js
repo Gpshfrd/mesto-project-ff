@@ -110,9 +110,9 @@ function handleNewCardSubmit(evt) {
   cardURLInput.value = "";
 }
 
-function addCard(card, userID) {
+function addCard(cardInfo, userID) {
   const newCard = createCard(
-    card,
+    cardInfo,
     userID,
     removeCard,
     likeCard,
@@ -196,6 +196,7 @@ popupList.forEach((popup) => {
   });
 });
 
+//Добавление информации с сервера в профиль
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([user, cards]) => {
     const userID = user["_id"];

@@ -23,6 +23,11 @@ export function createCard(
   cardImg.alt = cardInfo.name;
   cardTitle.textContent = cardInfo.name;
   likeCounter.textContent = cardInfo.likes.length;
+  cardInfo.likes.forEach((like) => {
+    if (like._id == userID) {
+      likeButton.classList.add('card__like-button_is-active');
+    }
+  })
 
   hideDeleteButton(cardInfo, userID, deleteButton);
 
