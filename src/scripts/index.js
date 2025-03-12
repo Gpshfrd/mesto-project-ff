@@ -199,6 +199,9 @@ popupList.forEach((popup) => {
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([user, cards]) => {
     const userID = user["_id"];
+    profileName.textContent = user.name;
+    profileProfession.textContent = user.about;
+    profileAvatar.style.backgroundImage = `url(${user.avatar})`;
     addCards(cards, userID);
   })
   .catch((error) => {

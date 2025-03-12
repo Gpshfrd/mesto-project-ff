@@ -16,7 +16,6 @@ export function createCard(
   const likeButton = card.querySelector(".card__like-button");
   const likeCounter = card.querySelector(".card__like-button-counter");
   const cardID = cardInfo["_id"];
-  const likes = cardInfo.likes;
 
   cardImg.addEventListener("click", () => imageOpenFunc(cardImg));
 
