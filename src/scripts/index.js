@@ -1,14 +1,17 @@
 import "../pages/index.css";
 import { closeModal, openModal } from "../components/modal.js";
 import { createCard, likeCard, removeCard } from "../components/card.js";
-import { enableValidation, clearValidation } from "./validation.js";
+import { enableValidation, clearValidation } from "../components/validation.js";
 import {
   getInitialCards,
   getUserInfo,
   updateUserInfo,
   postNewCard,
   changeAvatar,
-} from "./api.js";
+  addLike,
+  removeLike, 
+  removeFromCardsList
+} from "../components/api.js";
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -98,8 +101,8 @@ function handleNewCardSubmit(evt) {
     postNewCard(cardNameInput.value, cardURLInput.value),
   ])
     .then(([user, card]) => {
-      const userID = user["_id"];
-      addCard(card, userID);
+      const userId = user["_id"];
+      addCard(card, userId);
     })
     .catch((error) => {
       console.error(`Ошибка добавления карточки: ${error.message}`);
@@ -110,16 +113,19 @@ function handleNewCardSubmit(evt) {
   cardURLInput.value = "";
 }
 
-function addCard(cardInfo, userID) {
+function addCard(cardInfo, userId) {
   const newCard = createCard(
     cardInfo,
-    userID,
+    userId,
     removeCard,
     likeCard,
+    addLike, 
+    removeLike,
     openImage,
-    cardTemplate
+    cardTemplate,
+    removeFromCardsList
   );
-  cardsList.prepend(newCard);
+  cardsList.append(newCard);
 }
 
 function openImage(cardImg) {
@@ -199,25 +205,28 @@ popupList.forEach((popup) => {
 //Добавление информации с сервера в профиль
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([user, cards]) => {
-    const userID = user["_id"];
+    const userId = user["_id"];
     profileName.textContent = user.name;
     profileProfession.textContent = user.about;
     profileAvatar.style.backgroundImage = `url(${user.avatar})`;
-    addCards(cards, userID);
+    addCards(cards, userId);
   })
   .catch((error) => {
     console.error(error);
   });
 
-function addCards(cards, userID) {
+function addCards(cards, userId) {
   cards.forEach((cardInfo) => {
     const newCard = createCard(
       cardInfo,
-      userID,
+      userId,
       removeCard,
       likeCard,
+      addLike, 
+      removeLike,
       openImage,
-      cardTemplate
+      cardTemplate,
+      removeFromCardsList,
     );
     cardsList.prepend(newCard);
   });

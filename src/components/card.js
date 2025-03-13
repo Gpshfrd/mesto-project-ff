@@ -1,13 +1,14 @@
-import { addLike, removeLike, removeFromCardsList } from "../scripts/api";
-
 // Функция создания карточки
 export function createCard(
   cardInfo,
-  userID,
+  userId,
   removeFunc,
   likeFunc,
+  addLikeFunc,
+  removeLikeFunc,
   imageOpenFunc,
-  cardTemplate
+  cardTemplate,
+  removeFromCardsListFunc
 ) {
   const card = cardTemplate.querySelector(".card").cloneNode(true);
   const deleteButton = card.querySelector(".card__delete-button");
@@ -15,7 +16,7 @@ export function createCard(
   const cardTitle = card.querySelector(".card__title");
   const likeButton = card.querySelector(".card__like-button");
   const likeCounter = card.querySelector(".card__like-button-counter");
-  const cardID = cardInfo["_id"];
+  const cardId = cardInfo["_id"];
 
   cardImg.addEventListener("click", () => imageOpenFunc(cardImg));
 
@@ -24,26 +25,27 @@ export function createCard(
   cardTitle.textContent = cardInfo.name;
   likeCounter.textContent = cardInfo.likes.length;
   cardInfo.likes.forEach((like) => {
-    if (like._id == userID) {
+    if (like._id == userId) {
       likeButton.classList.add('card__like-button_is-active');
     }
   })
 
-  hideDeleteButton(cardInfo, userID, deleteButton);
+  hideDeleteButton(cardInfo, userId, deleteButton);
 
-  deleteButton.addEventListener("click", () => removeFunc(card, cardID));
+  deleteButton.addEventListener("click", () => removeFunc(card, cardId, removeFromCardsListFunc));
 
   likeButton.addEventListener("click", () =>
-    likeFunc(cardID, likeButton, likeCounter)
+    likeFunc(cardId, likeButton, likeCounter, addLikeFunc, removeLikeFunc)
   );
 
   return card;
 }
 
 //Функция лайка карточки
-export function likeCard(cardID, likeButton, likeCounter) {
-  if (!likeButton.classList.contains("card__like-button_is-active")) {
-    addLike(cardID)
+export function likeCard(cardId, likeButton, likeCounter, addLikeFunc, removeLikeFunc) {
+  const isLiked = likeButton.classList.contains("card__like-button_is-active");
+  if (!isLiked) {
+    addLikeFunc(cardId)
       .then((res) => {
         likeCounter.textContent = res.likes.length;
       })
@@ -54,7 +56,7 @@ export function likeCard(cardID, likeButton, likeCounter) {
         console.error(`Ошибка, невозможно поставить лайк: ${error.message}`);
       });
   } else {
-    removeLike(cardID)
+    removeLikeFunc(cardId)
       .then((res) => {
         likeCounter.textContent = res.likes.length;
       })
@@ -68,8 +70,8 @@ export function likeCard(cardID, likeButton, likeCounter) {
 }
 
 // Функция удаления карточки
-export function removeCard(card, cardID) {
-  removeFromCardsList(cardID)
+export function removeCard(card, cardId) {
+  removeFromCardsList(cardId)
     .then(() => {
       card.remove();
     })
@@ -79,9 +81,9 @@ export function removeCard(card, cardID) {
 }
 
 //Функция скрытия иконки удаления на карточках других пользователей
-function hideDeleteButton(card, userID, deleteButton) {
-  if (card.owner["_id"] != userID) {
+function hideDeleteButton(card, userId, deleteButton) {
+  if (card.owner["_id"] != userId) {
     deleteButton.classList.add("card__delete-button-disabled");
-    deleteButton.disable = true;
+    deleteButton.disabled = true;
   }
 }
