@@ -50,7 +50,7 @@
               minlength="2"
               maxlength="40"
               pattern="^[a-zA-Zа-яА-ЯёЁ\- ]+$"
-              data-error_message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
             <span class="popup__input-error input_name-error"></span>
@@ -61,7 +61,7 @@
               class="popup__input popup__input_type_description"
               placeholder="Занятие"
               pattern="^[a-zA-Zа-яА-ЯёЁ\- ]+$"
-              data-error_message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
             <span class="popup__input-error input_desc-error"></span>
@@ -85,7 +85,7 @@
               minlength="2"
               maxlength="30"
               pattern="^[a-zA-Zа-яА-ЯёЁ\- ]+$"
-              data-error_message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
             <span class="popup__input-error input_place_name-error"></span>
@@ -132,8 +132,7 @@
         </div>
       </div>
     </div>
-    <script src="./scripts/cards.js"></script>
-    <script src="./scripts/index.js" defer></script>
+    <script type="module" src="scripts/index.js"></script>
 
     <template id="card-template">
       <li class="places__item card">

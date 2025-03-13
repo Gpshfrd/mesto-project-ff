@@ -47,10 +47,7 @@ function toggleButtonState(inputs, button, validationConfig) {
 
 function showInputError(form, input, validationConfig) {
   const error = form.querySelector(`.${input.id}-error`);
-  error.textContent = input.validationMessage; 
-  if (input.validationMessage == "undefined") {
-    error.textContent = input.dataset.error_message;
-  }
+  error.textContent = input.validationMessage;
   error.classList.add(validationConfig.errorClass);
   input.classList.add(validationConfig.inputErrorClass);
 }
