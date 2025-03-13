@@ -1,5 +1,5 @@
 import "../pages/index.css";
-import { closeModal, openModal } from "../components/modal.js";
+import { closeModal, openModal, overlayClickCheck } from "../components/modal.js";
 import { createCard, likeCard, removeCard } from "../components/card.js";
 import { enableValidation, clearValidation } from "../components/validation.js";
 import {
@@ -60,24 +60,27 @@ const avatarInput = popupChangeAvatar.querySelector(
 const popupChangeAvatarCloseButton =
   popupChangeAvatar.querySelector(".popup__close");
 
+let userId
+
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
-
+  renderLoading(popupChangeAvatar, true);
   changeAvatar(avatarInput.value)
     .then((res) => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`;
     })
     .catch((error) => {
       console.error(`Ошибка изменения аватара: ${error.message}`);
-    });
-  closeModal(popupChangeAvatar);
-  avatarInput.textContent = "";
+    })
+    .finally(() => {
+      renderLoading(popupChangeAvatar, false);
+      closeModal(popupChangeAvatar);
+    })
 }
 
 function handleEditFormSubmit(evt) {
   evt.preventDefault();
-  profileName.textContent = nameInput.value;
-  profileProfession.textContent = jobInput.value;
+  renderLoading(popupEdit, true);
   updateUserInfo(nameInput.value, jobInput.value)
     .then((res) => {
       profileName.textContent = res.name;
@@ -85,32 +88,33 @@ function handleEditFormSubmit(evt) {
     })
     .catch((error) => {
       console.error(`Ошибка редактирования профиля: ${error.message}`);
-    });
-  closeModal(popupEdit);
+    })
+    .finally(() => {
+      renderLoading(popupEdit, false);
+      closeModal(popupEdit);
+    })
 }
 
 function handleNewCardSubmit(evt) {
-  evt.preventDefault();
   const cardNameInput = popupAddCard.querySelector(
     ".popup__input_type_card-name"
   );
-  const cardURLInput = popupAddCard.querySelector(".popup__input_type_url");
+  const cardUrlInput = popupAddCard.querySelector(".popup__input_type_url");
 
-  Promise.all([
-    getUserInfo(),
-    postNewCard(cardNameInput.value, cardURLInput.value),
-  ])
-    .then(([user, card]) => {
-      const userId = user["_id"];
+  evt.preventDefault();
+  renderLoading(popupAddCard, true);
+
+  postNewCard(cardNameInput.value, cardUrlInput.value)
+    .then((card) => {
       addCard(card, userId);
     })
     .catch((error) => {
       console.error(`Ошибка добавления карточки: ${error.message}`);
-    });
-
-  closeModal(popupAddCard);
-  cardNameInput.value = "";
-  cardURLInput.value = "";
+    })
+    .finally(() => {
+      renderLoading(popupAddCard, false);
+      closeModal(popupAddCard);
+    })
 }
 
 function addCard(cardInfo, userId) {
@@ -129,11 +133,21 @@ function addCard(cardInfo, userId) {
 }
 
 function openImage(cardImg) {
-  popupImagePicture.src = "";
   openModal(popupImage);
   popupImagePicture.src = cardImg.src;
   popupImagePicture.alt = cardImg.alt;
   popupImageContent.textContent = cardImg.alt;
+}
+
+function renderLoading(popup, isLoading) {
+  const submitButton = popup.querySelector(".popup__button")
+  if (isLoading) {
+    submitButton.textContent = "Сохранение...";
+    submitButton.disabled = true;
+  } else {
+    submitButton.textContent = "Сохранить";
+    submitButton.disabled = false;
+  }
 }
 
 profileAvatar.addEventListener("click", () => {
@@ -143,10 +157,7 @@ profileAvatar.addEventListener("click", () => {
 });
 
 changeAvatarForm.addEventListener("submit", (evt) => {
-  changeAvatarForm.querySelector(".popup__button").textContent =
-    "Сохранение...";
   handleAvatarFormSubmit(evt);
-  changeAvatarForm.querySelector(".popup__button").textContent = "Сохранить";
 });
 
 popupChangeAvatarCloseButton.addEventListener("click", () => {
@@ -156,19 +167,14 @@ popupChangeAvatarCloseButton.addEventListener("click", () => {
 
 popupImageCloseButton.addEventListener("click", () => {
   closeModal(popupImage);
-  popupImageContent.textContent = "";
 });
 
 popupEdit.addEventListener("submit", (evt) => {
-  popupEdit.querySelector(".popup__button").textContent = "Сохранение...";
   handleEditFormSubmit(evt);
-  popupEdit.querySelector(".popup__button").textContent = "Сохранить";
 });
 
 popupAddCard.addEventListener("submit", (evt) => {
-  popupAddCard.querySelector(".popup__button").textContent = "Сохранение...";
   handleNewCardSubmit(evt);
-  popupAddCard.querySelector(".popup__button").textContent = "Сохранить";
 });
 
 editButton.addEventListener("click", () => {
@@ -196,9 +202,7 @@ enableValidation(validationConfig);
 // Добавление обработчика клика по оверлею на все попапы
 popupList.forEach((popup) => {
   popup.addEventListener("click", (event) => {
-    if (!event.target.closest(".popup__content")) {
-      closeModal(popup);
-    }
+    overlayClickCheck(event, popup);
   });
 });
 

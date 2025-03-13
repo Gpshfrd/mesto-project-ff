@@ -70,8 +70,8 @@ export function likeCard(cardId, likeButton, likeCounter, addLikeFunc, removeLik
 }
 
 // Функция удаления карточки
-export function removeCard(card, cardId) {
-  removeFromCardsList(cardId)
+export function removeCard(card, cardId, removeFromCardsListFunc) {
+  removeFromCardsListFunc(cardId)
     .then(() => {
       card.remove();
     })

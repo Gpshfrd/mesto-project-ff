@@ -4,6 +4,10 @@ export function openModal(popup) {
 }
 
 export function closeModal(popup) {
+  const inputs = Array.from(popup.querySelectorAll('.popup__input'));
+  inputs.forEach((input) => {
+    input.value = "";
+  })
   popup.classList.remove("popup_is-opened");
   document.removeEventListener("keydown", handleEscClose);
 }
@@ -14,5 +18,11 @@ function handleEscClose(event) {
     if (openedPopup) {
       closeModal(openedPopup);
     }
+  }
+}
+
+export function overlayClickCheck(evt, popup) {
+  if (!evt.target.closest(".popup__content")) {
+    closeModal(popup);
   }
 }
