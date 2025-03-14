@@ -60,9 +60,9 @@ function hideInputError(form, input, validationConfig) {
 }
 
 export function clearValidation(form, validationConfig) {
-  const inputs = form.querySelectorAll(validationConfig.inputSelector);
+  const inputs = Array.from(form.querySelectorAll(validationConfig.inputSelector));
   const button = form.querySelector(validationConfig.submitButtonSelector);
-
+  
   inputs.forEach((input) => {
     hideInputError(form, input, validationConfig);
   });

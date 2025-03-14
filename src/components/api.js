@@ -33,12 +33,7 @@ export const updateUserInfo = (name, about) => {
 export const getInitialCards = () => {
   return fetch(`${apiConfig.url}/cards`, {
     headers: apiConfig.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 export const postNewCard = (name, link) => {
@@ -63,7 +58,7 @@ export const addLike = (cardID) => {
   return fetch(`${apiConfig.url}/cards/likes/${cardID}`, {
     method: "PUT",
     headers: apiConfig.headers,
-  }).then(handleResponse);
+  }).then(handleResponse)
 };
 
 export const removeLike = (cardID) => {
