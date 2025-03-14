@@ -1,22 +1,28 @@
 export function enableValidation(validationConfig) {
-  const forms = Array.from(document.querySelectorAll(validationConfig.formSelector));
+  const forms = Array.from(
+    document.querySelectorAll(validationConfig.formSelector)
+  );
 
-  forms.forEach(form => {
-    setEventListeners(form, validationConfig)
-  })
+  forms.forEach((form) => {
+    setEventListeners(form, validationConfig);
+  });
 }
 
 function setEventListeners(form, validationConfig) {
-  const inputs = Array.from(form.querySelectorAll(validationConfig.inputSelector));
-  const submitButton = form.querySelector(validationConfig.submitButtonSelector);
+  const inputs = Array.from(
+    form.querySelectorAll(validationConfig.inputSelector)
+  );
+  const submitButton = form.querySelector(
+    validationConfig.submitButtonSelector
+  );
   toggleButtonState(inputs, submitButton, validationConfig);
 
-  inputs.forEach(input => {
-    input.addEventListener('input', () => {
+  inputs.forEach((input) => {
+    input.addEventListener("input", () => {
       isValid(form, input, validationConfig);
       toggleButtonState(inputs, submitButton, validationConfig);
-    })
-  })
+    });
+  });
 }
 
 function isValid(form, input, validationConfig) {
@@ -34,7 +40,9 @@ function isValid(form, input, validationConfig) {
 }
 
 function toggleButtonState(inputs, button, validationConfig) {
-  const hasInvalidInput = inputs.some((input) => {return !input.validity.valid});
+  const hasInvalidInput = inputs.some((input) => {
+    return !input.validity.valid;
+  });
 
   if (hasInvalidInput) {
     button.disabled = true;
@@ -60,9 +68,11 @@ function hideInputError(form, input, validationConfig) {
 }
 
 export function clearValidation(form, validationConfig) {
-  const inputs = Array.from(form.querySelectorAll(validationConfig.inputSelector));
+  const inputs = Array.from(
+    form.querySelectorAll(validationConfig.inputSelector)
+  );
   const button = form.querySelector(validationConfig.submitButtonSelector);
-  
+
   inputs.forEach((input) => {
     hideInputError(form, input, validationConfig);
   });

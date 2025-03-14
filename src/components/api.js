@@ -58,7 +58,7 @@ export const addLike = (cardID) => {
   return fetch(`${apiConfig.url}/cards/likes/${cardID}`, {
     method: "PUT",
     headers: apiConfig.headers,
-  }).then(handleResponse)
+  }).then(handleResponse);
 };
 
 export const removeLike = (cardID) => {

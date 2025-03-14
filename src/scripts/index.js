@@ -1,5 +1,9 @@
 import "../pages/index.css";
-import { closeModal, openModal, overlayClickCheck } from "../components/modal.js";
+import {
+  closeModal,
+  openModal,
+  overlayClickCheck,
+} from "../components/modal.js";
 import { createCard } from "../components/card.js";
 import { enableValidation, clearValidation } from "../components/validation.js";
 import {
@@ -9,8 +13,8 @@ import {
   postNewCard,
   changeAvatar,
   addLike,
-  removeLike, 
-  removeFromCardsList
+  removeLike,
+  removeFromCardsList,
 } from "../components/api.js";
 
 const validationConfig = {
@@ -60,7 +64,7 @@ const avatarInput = popupChangeAvatar.querySelector(
 const popupChangeAvatarCloseButton =
   popupChangeAvatar.querySelector(".popup__close");
 
-let userId
+let userId;
 
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
@@ -75,8 +79,8 @@ function handleAvatarFormSubmit(evt) {
     })
     .finally(() => {
       renderLoading(popupChangeAvatar, false);
-      clearValidation(changeAvatarForm, validationConfig)
-    })
+      clearValidation(changeAvatarForm, validationConfig);
+    });
 }
 
 function handleEditFormSubmit(evt) {
@@ -93,8 +97,8 @@ function handleEditFormSubmit(evt) {
     })
     .finally(() => {
       renderLoading(popupEdit, false);
-      clearValidation(profileForm, validationConfig)
-    })
+      clearValidation(profileForm, validationConfig);
+    });
 }
 
 function handleNewCardSubmit(evt) {
@@ -117,12 +121,12 @@ function handleNewCardSubmit(evt) {
     .finally(() => {
       renderLoading(popupAddCard, false);
       clearValidation(addCardForm, validationConfig);
-    })
+    });
 }
 
 //Функция лайка карточки
 function likeCard(cardInfo, likeButton, likeCounter, userId) {
-  const likesList = cardInfo.likes.map(user => user._id);
+  const likesList = cardInfo.likes.map((user) => user._id);
   let isLiked = likesList.includes(userId);
   if (!isLiked) {
     addLike(cardInfo._id)
@@ -165,7 +169,7 @@ function addCard(cardInfo, userId) {
     removeCard,
     likeCard,
     openImage,
-    cardTemplate,
+    cardTemplate
   );
   cardsList.prepend(newCard);
 }
@@ -178,7 +182,7 @@ function openImage(cardImg) {
 }
 
 function renderLoading(popup, isLoading) {
-  const submitButton = popup.querySelector(".popup__button")
+  const submitButton = popup.querySelector(".popup__button");
   if (isLoading) {
     submitButton.textContent = "Сохранение...";
     submitButton.disabled = true;
@@ -265,7 +269,7 @@ function addCards(cards, userId) {
       removeCard,
       likeCard,
       openImage,
-      cardTemplate,
+      cardTemplate
     );
     cardsList.prepend(newCard);
   });

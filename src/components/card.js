@@ -25,10 +25,10 @@ export function createCard(
   likeCounter.textContent = cardInfo.likes.length;
 
   const isMyLike = cardInfo.likes.some((like) => {
-    return(like._id == userId);
-  })
+    return like._id == userId;
+  });
   if (isMyLike) {
-    likeButton.classList.add('card__like-button_is-active');
+    likeButton.classList.add("card__like-button_is-active");
   }
 
   hideDeleteButton(cardInfo, userId, deleteButton);
